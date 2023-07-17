@@ -1,0 +1,87 @@
+#!/usr/bin/env ruby
+
+require "fileutils"
+require_relative "../lib/utils"
+require_relative "../lib/nonogram"
+
+# Entry point for kamotake
+def main
+  bin_name = File.basename($PROGRAM_NAME)
+
+  # If no arguments, print usage
+  if ARGV.empty?
+    puts "#{bin_name}: No arguments provided"
+    puts "Usage: #{bin_name} FILE [-d]"
+    exit 1
+  end
+
+  filename = ARGV[0]
+  # debug = ARGV[1] == "-d"
+
+  # Parse txt provide by argument
+  begin
+    # Tiene que levantar excepción si el archivo ta malo
+    # O no tiene el número de columnas y filas correcto
+    nonogram = Nonogram.new(filename)
+  rescue Errno::ENOENT => e
+    puts "#{bin_name}: #{filename}: No such file"
+    exit 1
+  rescue => e
+    puts "#{bin_name}: #{filename}: Invalid file"
+    exit 1
+  end
+
+=begin
+
+  # Print parsed data
+  puts "Solver for #{filename} 🧩\n\n"
+
+  cnf_filename = ""
+  t_translation = 0
+  thr = Thread.new do
+    t_translation = measure_time {
+      cnf_filename = nonogram.to_cnf
+    }
+  end
+
+  # While wait for the thread to finish, show a loading animation
+  begin
+    while thr.alive?
+      for i in 0..3
+        print "\rWait while we're explaining your nonogram to the computer 🥬#{"." * i}#{" " * (3 - i)}"
+        sleep 0.3
+      end
+    end
+  rescue Interrupt
+    puts "\rInterrupted! 🤬#{" " * 112}"
+    exit 1
+  end
+  puts "\rUnderstanding complete in #{t_translation} seconds! 💅 (DIMACS translation generated in #{cnf_filename})\n\n"
+
+  solution_filename = solve_cnf(cnf_filename, "glucose")
+
+  if !debug
+    FileUtils.rm_rf(cnf_filename)
+  end
+
+  solution = extract_solution(solution_filename, n_participants, n_days, n_hours)
+
+  if !debug
+    puts "\nCleaning DIMACS and SAT solution files... 🧹 (You can keep them with the -d flag)\n\n"
+    FileUtils.rm_rf(".tmp_sat-planner")
+  end
+
+  if solution.empty?
+    puts "This puzzle isn't solvable, what the... 🦧"
+    exit 0
+  end
+
+  output_filename = ""
+  t_ics = measure_time {
+    output_filename = nonogram.to_image(solution)
+  }
+
+  puts "Solution generated in #{t_ics} seconds! You can check the image at '#{output_filename}', pretty nice 📵"
+end
+
+main if __FILE__ == $0
