@@ -13,10 +13,20 @@ class Nonogram
     # - @n_cols (Integer)
     # - @row_constraints (Array<Array<Integer>>)
     # - @col_constraints (Array<Array<Integer>>)
-    
+
     File.open(filename) do |file|
+      # Get the first line of the file
+      line = file.gets
+      raise "Invalid file format: missing first line" if line.nil?
+
+      # Verify that the first line contains n_rows and n_cols
+      parts = line.split
+      if parts.size != 2 || !parts.all? { |part| part =~ /^\d+$/ }
+        raise "Invalid file format: first line must contain number of rows and columns"
+      end
+
       # Get the number of rows and columns
-      @n_rows, @n_cols = file.gets.split.map(&:to_i)
+      @n_rows, @n_cols = parts.map(&:to_i)
       if @n_rows <= 0 || @n_cols <= 0
         raise ArgumentError, "Invalid number of rows or columns"
       end
@@ -25,7 +35,7 @@ class Nonogram
       @row_constraints = Array.new(@n_rows) { [] }
       @col_constraints = Array.new(@n_cols) { [] }
 
-     # Read the row constraints
+      # Read the row constraints
       @n_rows.times do |i|
         line = file.gets
         raise "Incomplete file: missing row constraints" if line.nil?
