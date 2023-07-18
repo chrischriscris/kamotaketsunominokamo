@@ -82,6 +82,7 @@ def main
   }
 
   puts "Solution generated in #{t_ics} seconds! You can check the image at '#{output_filename}', pretty nice 📵"
+=end
 end
 
 main if __FILE__ == $0

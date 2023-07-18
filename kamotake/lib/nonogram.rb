@@ -1,7 +1,7 @@
 require "fileutils"
 
 require_relative "../lib/utils"
-require_relative "../lib/constraints"
+# require_relative "../lib/constraints"
 
 class Nonogram
   # Parse an instance of a nonogram problem from a file
@@ -13,6 +13,25 @@ class Nonogram
     # - @n_cols (Integer)
     # - @row_constraints (Array<Array<Integer>>)
     # - @col_constraints (Array<Array<Integer>>)
+    
+    File.open(filename) do |file|
+      # Get the number of rows and columns
+      @n_rows, @n_cols = file.gets.split.map(&:to_i)
+
+      # Initialize the constraints
+      @row_constraints = Array.new(@n_rows) { [] }
+      @col_constraints = Array.new(@n_cols) { [] }
+
+      # Read the row constraints
+      @n_rows.times do |i|
+        @row_constraints[i] = file.gets.split.map(&:to_i)
+      end
+
+      # Read the column constraints
+      @n_cols.times do |j|
+        @col_constraints[j] = file.gets.split.map(&:to_i)
+      end
+    end
   end
 
   def to_cnf
@@ -30,6 +49,8 @@ class Nonogram
   # Definir variables privadas para Tseitin y funciones para generar las
   # cláusulas de cada restricción
 end
+
+
 
 
 

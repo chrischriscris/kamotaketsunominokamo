@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "Installing sat-planner"
+echo "Installing kamotake"
 
 echo "  Installing dependencies"
 make >> /dev/null
