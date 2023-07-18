@@ -27,7 +27,7 @@ def main
     puts "#{bin_name}: #{filename}: No such file"
     exit 1
   rescue => e
-    puts "#{bin_name}: #{filename}: Invalid file"
+    puts "#{bin_name}: #{filename}: #{e.message}"
     exit 1
   end
 

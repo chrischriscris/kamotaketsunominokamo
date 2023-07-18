@@ -17,23 +17,31 @@ class Nonogram
     File.open(filename) do |file|
       # Get the number of rows and columns
       @n_rows, @n_cols = file.gets.split.map(&:to_i)
+      if @n_rows <= 0 || @n_cols <= 0
+        raise ArgumentError, "Invalid number of rows or columns"
+      end
 
       # Initialize the constraints
       @row_constraints = Array.new(@n_rows) { [] }
       @col_constraints = Array.new(@n_cols) { [] }
 
-      # Read the row constraints
+     # Read the row constraints
       @n_rows.times do |i|
-        @row_constraints[i] = file.gets.split.map(&:to_i)
+        line = file.gets
+        raise "Incomplete file: missing row constraints" if line.nil?
+        @row_constraints[i] = line.split.map(&:to_i)
       end
 
       # Read the column constraints
       @n_cols.times do |j|
-        @col_constraints[j] = file.gets.split.map(&:to_i)
+        line = file.gets
+        raise "Incomplete file: missing column constraints" if line.nil?
+        @col_constraints[j] = line.split.map(&:to_i)
       end
     end
   end
 
+  # Generates a CNF file from the nonogram instance
   def to_cnf
     # ...
   end
