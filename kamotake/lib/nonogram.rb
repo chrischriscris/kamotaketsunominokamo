@@ -4,16 +4,12 @@ require_relative "../lib/utils"
 # require_relative "../lib/constraints"
 
 class Nonogram
+  attr_reader :n_rows, :n_cols, :row_constraints, :col_constraints
+
   # Parse an instance of a nonogram problem from a file
   #
   # @param filename [String] the name of the file
   def initialize(filename)
-    # Lo que debe tener la clase (por ahora)
-    # - @n_rows (Integer)
-    # - @n_cols (Integer)
-    # - @row_constraints (Array<Array<Integer>>)
-    # - @col_constraints (Array<Array<Integer>>)
-
     File.open(filename) do |file|
       # Get the first line of the file
       line = file.gets
@@ -26,7 +22,7 @@ class Nonogram
       end
 
       # Get the number of rows and columns
-      @n_rows, @n_cols = parts.map(&:to_i)
+      @n_cols, @n_rows = parts.map(&:to_i)
       if @n_rows <= 0 || @n_cols <= 0
         raise ArgumentError, "Invalid number of rows or columns"
       end
@@ -57,6 +53,15 @@ class Nonogram
   end
 
   def solve
+
+    File.open("nonogram.cnf", "w") do |file|
+      for r in rows:
+        write_clauses(i, r, true)
+
+      for c in cols:
+        write_clauses(i, c, false)
+    end
+
     # ...
   end
 
@@ -66,11 +71,38 @@ class Nonogram
 
   # Definir variables privadas para Tseitin y funciones para generar las
   # cláusulas de cada restricción
+
+  private
+
+  # Generate all possible combinations of groups and empty spaces for a row or
+  # column of the nonogram as an array of 1s and -1s.
+  #
+  # @param [Array<Integer>] groups Array of groups of filled cells
+  # @param [Boolean] is_row Whether the groups are for a row or a column
+  def generate_possibilities(groups, is_row)
+    n_groups = groups.size
+    n_empty = (is_row ? @n_cols : @n_rows) - groups.sum - (n_groups - 1)
+
+    # Generate all ways of taking n_groups elements from a set of n_blocks
+    n_blocks = n_groups + n_empty
+    combinations = (0...n_blocks).to_a.combination(n_groups).to_a
+
+    # Generate the blocks to be placed in the empty spaces
+    blocks = groups.map { |n| [1] * n + [-1] }
+
+    possibilities = []
+    combinations.each do |combination|
+      possibility = [-1] * (n_blocks)
+      combination.each_with_index do |i, j|
+        possibility[i] = blocks[j]
+      end
+
+      possibilities << possibility.flatten[0...-1]
+    end
+
+    possibilities
+  end
 end
-
-
-
-
 
 # Calculates the number of clauses in the CNF translation.
 #
@@ -79,51 +111,4 @@ end
 # @return [Integer] Number of clauses to be written
 def calculate_number_of_clauses(rows, cols)
   0
-end
-
-# Solves a SAT problem in CNF format using the minisat solver.
-#
-# @param [String] filename Name of the CNF file
-# @param [String] bin_path Path to the SAT Solver binary
-# @return [String] Name of the solution file
-def solve_cnf(filename, bin_path)
-  solution_filename = ".tmp_kamotake/" \
-  "#{File.basename(filename, File.extname(filename))}_solution.cnf"
-
-  # Run in background to avoid blocking
-  t_start = Time.now
-  pid = spawn("#{bin_path} #{filename} #{solution_filename}", out: "/dev/null")
-  Process.detach(pid)
-
-  # Wait for the child process to exit and retrieve its exit status
-  begin
-    loop do
-      # Check if the child process has exited
-      begin
-        status = Process.waitpid2(pid, Process::WNOHANG)
-      rescue Errno::ECHILD
-        # Child process has exited, do something
-        puts "\rWe're finished in #{Time.now - t_start} seconds! 🦛 (Solution found in #{solution_filename})\n\n"
-        break
-      end
-
-      # Child process is still running
-      for char in ["—", "\\", "|", "/"]
-        print "\rPlease wait we're attempting to schedule 🍳... #{char}"
-        sleep 0.1
-      end
-    end
-    # Ctrl-C to stop the process
-  rescue Interrupt
-    puts "\rInterrupted! 🤬#{" " * 44}\n\n"
-
-    # Remove .temp_sat-planner directory
-    FileUtils.rm_rf(".tmp_kamotake")
-
-    # Kill the child process
-    Process.kill("TERM", pid)
-    exit 1
-  end
-
-  solution_filename
 end
