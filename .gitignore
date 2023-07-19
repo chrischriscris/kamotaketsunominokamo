@@ -13,6 +13,9 @@
 # Executable files:
 glucose
 
+# kamotake specific
+.tmp_kamotake/
+
 # Used by dotenv library to load environment variables.
 # .env
 
