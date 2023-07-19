@@ -14,48 +14,68 @@ end
 # @param n_rows [Integer] the number of rows
 # @param n_cols [Integer] the number of columns
 # @return [Array] the solution matrix
-def extract_solution(solution_filename, n_rows, n_cols)
-  File.open(solution_filename, "r") do |f|
-    solution_string = f.readline.strip
+# def extract_solution(solution_filename, n_rows, n_cols)
+#   File.open(solution_filename, "r") do |f|
+#     solution_string = f.readline.strip
 
-    if solution_string == "UNSAT"
-      return []
-    end
+#     if solution_string == "UNSAT"
+#       return []
+#     end
 
-    dimension = n_rows * n_cols
+#     dimension = n_rows * n_cols
 
-    matrix = []
-    line = []
-    count = 0
+#     matrix = []
+#     line = []
+#     count = 0
 
-    solution_string.split(" ")
-      .take(dimension)
-      .map do |n|
-      line << (n.to_i > 0)
-      count += 1
-      if count == n_cols
-        matrix << line
-        line = []
-        count = 0
-      end
-    end
+#     solution_string.split(" ")
+#       .take(dimension)
+#       .map do |n|
+#       line << (n.to_i > 0)
+#       count += 1
+#       if count == n_cols
+#         matrix << line
+#         line = []
+#         count = 0
+#       end
+#     end
 
-    matrix
-  end
-end
+#     matrix
+#   end
+# end
+
+# def to_s
+#   if @solution.empty? || @solution.nil?
+#     puts "N = #{@n_rows} x #{@n_cols}"
+#     puts "No solution found"
+#     return
+#   end
+
+#   sol.each do |row|
+#     row.each do |cell|
+#       print cell ? "#" : "."
+#     end
+#     puts
+#   end
+# end
 
 # Solves a SAT problem in CNF format using the minisat solver.
 #
-# @param [String] filename Name of the CNF file
+# @param [String] header_filename Name of the header file
+# @param [String] cnf_filename Name of the CNF file
 # @param [String] bin_path Path to the SAT Solver binary
 # @return [String] Name of the solution file
-def solve_cnf(filename, bin_path)
+def solve_cnf(header_filename, cnf_filename, bin_path)
   solution_filename = ".tmp_kamotake/" \
-  "#{File.basename(filename, File.extname(filename))}_solution.cnf"
+  "#{File.basename(cnf_filename, File.extname(cnf_filename))}_solution.cnf"
 
   # Run in background to avoid blocking
   t_start = Time.now
-  pid = spawn("#{bin_path} #{filename} #{solution_filename}", out: "/dev/null")
+  pid = spawn(
+    "cat #{header_filename} #{cnf_filename} |" \
+    "#{bin_path} /dev/stdin #{solution_filename}",
+    out: "/dev/null",
+  )
   Process.detach(pid)
 
   # Wait for the child process to exit and retrieve its exit status

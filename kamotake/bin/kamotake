@@ -29,6 +29,7 @@ def main
     puts "Número de columnas: #{nonogram.n_cols}"
     puts "Restricciones de las filas: #{nonogram.row_constraints}"
     puts "Restricciones de las columnas: #{nonogram.col_constraints}"
+
   rescue Errno::ENOENT => e
     puts "#{bin_name}: #{filename}: No such file"
     exit 1
@@ -36,6 +37,9 @@ def main
     puts "#{bin_name}: #{filename}: #{e.message}"
     exit 1
   end
+
+  nonogram.solve
+  nonogram.to_s
 
 =begin
 
