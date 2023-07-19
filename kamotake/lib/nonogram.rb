@@ -103,6 +103,33 @@ class Nonogram
       end
       puts
     end
+
+    # Creates an image of the solution with mini_magick
+    require "mini_magick"
+
+    # Create a blank image (put in another part but idk where)
+    MiniMagick::Tool::Convert.new do |convert|
+      convert.size "#{@n_cols * 10}x#{@n_rows * 10}"
+      convert.xc "white"
+      convert << "img/#{@name}_solution.png"
+    end
+
+    image = MiniMagick::Image.new("img/#{@name}_solution.png")
+    image.resize "#{@n_cols * 10}x#{@n_rows * 10}"
+    image.format "png"
+
+    @solution.each_with_index do |row, i|
+      row.each_with_index do |cell, j|
+        if cell
+          image.combine_options do |c|
+            c.draw "rectangle #{j * 10},#{i * 10} #{j * 10 + 10},#{i * 10 + 10}"
+          end
+        end
+      end
+    end
+
+    image.write "img/#{@name}_solution.png"
+
   end
 
   # Definir variables privadas para Tseitin y funciones para generar las
