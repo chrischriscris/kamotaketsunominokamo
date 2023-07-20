@@ -1,4 +1,5 @@
 require "fileutils"
+require "mini_magick"
 
 require_relative "../lib/utils"
 # require_relative "../lib/constraints"
@@ -103,9 +104,13 @@ class Nonogram
       end
       puts
     end
+  end
 
-    # Creates an image of the solution with mini_magick
-    require "mini_magick"
+  def to_img
+    if @solution.nil? || @solution.empty?
+      puts "We can't generate an image without a solution 🫙"
+      return
+    end
 
     # Create a blank image (put in another part but idk where)
     MiniMagick::Tool::Convert.new do |convert|
@@ -129,7 +134,6 @@ class Nonogram
     end
 
     image.write "img/#{@name}_solution.png"
-
   end
 
   # Definir variables privadas para Tseitin y funciones para generar las
@@ -201,6 +205,7 @@ class Nonogram
       # Writes the <== clauses: (p_i v -l_1 v ... v -l_n)
       file.puts "#{aux.join(" ")} 0"
     end
+
   end
 
   # Extract solution from a solution file
