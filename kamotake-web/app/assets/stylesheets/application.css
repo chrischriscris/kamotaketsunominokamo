@@ -1,0 +1,95 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+/* Add font */
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
+
+/* Add color to the background of the body */
+body {
+  font-family: "JetBrains Mono", monospace;
+  background: #dce9be;
+  color: #40957f;
+}
+
+h1,
+h2 {
+  color: #7e5686;
+}
+
+p {
+  color: #297a65;
+}
+
+img {
+  border-radius: 3%;
+}
+
+#file-input,
+#file-submit {
+  display: none;
+}
+
+#selected-file {
+  font-size: 0.8em;
+  color: #666;
+  margin-top: 0.5em;
+  display: inline-block;
+  text-align: left;
+  float: right;
+  background-color: #f1e7c5;
+  padding: 3.5em;
+  border-radius: 0.5em;
+  display: none;
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+}
+
+/* Fadeout animation */
+@keyframes fadeout {
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+#selected-file {
+  animation: fadeout 3s;
+}
+
+.file-upload {
+  margin-bottom: 2em;
+}
+
+.file-upload > label {
+  background: #7e5686;
+  color: #dce9be;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: large;
+}
+
+.file-submit {
+  background: #5b7056;
+  color: #f1fff1;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: large;
+}

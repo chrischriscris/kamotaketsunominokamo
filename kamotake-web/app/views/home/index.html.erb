@@ -1,0 +1,52 @@
+<div class="container" style="text-align: center;">
+  <h1>カモタカツノミノカモ</h1>
+  <h2>Welcome to Kamotake restaurant!</h2>
+  <div style="display: inline-block; text-align: left;">
+    <p>
+      - I am a god of Shimogamo Shrine. My proper name is
+      Kamotaketsunuminokami!<br>
+      - K-Kamotake??<br>
+      - Kamotaketsunominokamo!! Don't make me say it twice.
+      <br>
+      - ... but, the second time was different.
+    </p>
+  </div>
+
+  <img
+    src="/assets/kamotake.jpeg"
+    alt="Kamotaketsunuminokami"
+    width="800"
+    height="auto"
+  />
+
+  <%= form_with do |form| %>
+    <h1>MENU</h1>
+    <div class="file-upload">
+      <label for="file-input">Nonogram (Chef's recommendation)</label>
+      <%= form.file_field :file, accept: "text/plain", id: "file-input" %>
+    </div>
+
+    <label for="file-submit" class="file-submit">
+      Order now!
+    </label>
+    <%= form.submit id: "file-submit" %>
+  <% end %>
+</div>
+
+<div id="selected-file">
+  Ingredients added! <br>
+  <span id="filename"></span>
+</div>
+
+<script>
+    document.querySelector("#file-input").addEventListener("change", function () {
+    const selectedFile = this.files[0].name;
+    document.querySelector("#selected-file").style.display = "block";
+    document.querySelector("#filename").textContent  = selectedFile;
+
+    // Wait for 3 seconds and hide the message
+    setTimeout(function () {
+      document.querySelector("#selected-file").style.display = "none";
+    }, 3000);
+});
+</script>
