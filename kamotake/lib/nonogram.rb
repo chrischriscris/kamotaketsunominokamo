@@ -2,7 +2,6 @@ require "fileutils"
 require "mini_magick"
 
 require_relative "../lib/utils"
-# require_relative "../lib/constraints"
 
 class Nonogram
   attr_reader :n_rows, :n_cols, :row_constraints, :col_constraints, :name, :solution
@@ -90,20 +89,22 @@ class Nonogram
     @solution = extract_solution(solution_filename)
   end
 
-  # Print the solution to the console
+  # Returns a string representation of the nonogram
   def to_s
     if @solution.nil? || @solution.empty?
-      puts "N = #{@n_rows} x #{@n_cols}"
-      puts "No solution found"
-      return
+      return "N = #{@n_rows} x #{@n_cols}\nNo solution found"
     end
+
+    string = ""
 
     @solution.each do |row|
       row.each do |cell|
-        print cell ? "■ " : ". "
+        string << (cell ? "■ " : ". ")
       end
-      puts
+      string << "\n"
     end
+
+    string
   end
 
   def to_img
@@ -189,21 +190,26 @@ class Nonogram
     @n_clauses += 1 + n_possibilities * (cells.size + 1)
 
     # At least one possibility must be true
-    file.puts "#{((@ps + 1)..(@ps + n_possibilities)).to_a.join(" ")} 0"
+    for i in @ps + 1..@ps + n_possibilities
+      file.print "#{i} "
+    end
+    file.puts "0"
+
     possibilities.each do |possibility|
       # Generate a Tseitin variable
       @ps += 1
-      aux = [@ps]
+      aux = "#{@ps} "
 
       # Writes the ==> clauses: (-p_i) v (l_1 ^ ... ^ l_n)
       possibility.each_with_index do |value, i|
         l_i = cells[i] * value
         file.puts "#{-@ps} #{l_i} 0"
-        aux << -l_i
+        aux << "#{-l_i} "
       end
+      aux << "0"
 
       # Writes the <== clauses: (p_i v -l_1 v ... v -l_n)
-      file.puts "#{aux.join(" ")} 0"
+      file.puts aux
     end
 
   end

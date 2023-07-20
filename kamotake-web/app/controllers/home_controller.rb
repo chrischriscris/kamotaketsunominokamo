@@ -1,17 +1,32 @@
+require 'kamotake/nonogram'
+
 class HomeController < ApplicationController
+  @@nonogram = nil
+
   def index
-    # Render a hello world message as HTML
-    "Hello world!"
   end
 
-  def order
+  def handle_file
     # Get :file from the request parameters
     file = params[:file]
 
-    # Get the file's original filename
-    filename = file.original_filename
+    # Get the file's original name
+    name = file.original_filename
+    @@nonogram = Nonogram.new(file.tempfile, name)
 
-    puts "Received file: #{filename}"
+    # Print nonogram to console
+    @@nonogram.solve
 
+    # Get request to /order and pass the solution as a parameter
+    redirect_to :order
+  end
+
+  def order
+    if @@nonogram.nil?
+      redirect_to :root
+    end
+
+    @solution = @@nonogram.solution
+    @name = @@nonogram.name
   end
 end

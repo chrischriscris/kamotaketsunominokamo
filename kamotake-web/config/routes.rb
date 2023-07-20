@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#index"
+  post "/", to: "home#handle_file"
 
-  post "/", to: "home#order"
+  get "/order", to: "home#order"
 end

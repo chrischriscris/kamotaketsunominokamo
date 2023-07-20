@@ -1,52 +1,49 @@
 require "fileutils"
-require "mini_magick"
 
-require_relative "../lib/utils"
-# require_relative "../lib/constraints"
+require_relative "utils"
 
 class Nonogram
   attr_reader :n_rows, :n_cols, :row_constraints, :col_constraints, :name, :solution
 
   # Parse an instance of a nonogram problem from a file
   #
-  # @param filename [String] the name of the file
-  def initialize(filename)
-    @name = File.basename(filename, File.extname(filename))
+  # @param [File] file The file to read the instance from
+  # @param [String] name The name of the instance
+  def initialize(file, name)
+    @name = File.basename(name, File.extname(name))
 
-    File.open(filename) do |file|
-      # Get the first line of the file
+    # Get the first line of the file
+    line = file.gets
+    raise "Invalid file format: missing first line" if line.nil?
+
+    # Verify that the first line contains n_rows and n_cols
+    parts = line.split
+    if parts.size != 2 || !parts.all? { |part| part =~ /^\d+$/ }
+      raise "Invalid file format: first line must contain number of rows and columns"
+    end
+
+    # Get the number of rows and columns
+    @n_cols, @n_rows = parts.map(&:to_i)
+    if @n_rows <= 0 || @n_cols <= 0
+      raise ArgumentError, "Invalid number of rows or columns"
+    end
+
+    # Initialize the constraints
+    @row_constraints = Array.new(@n_rows) { [] }
+    @col_constraints = Array.new(@n_cols) { [] }
+
+    # Read the row constraints
+    @n_rows.times do |i|
       line = file.gets
-      raise "Invalid file format: missing first line" if line.nil?
+      raise "Incomplete file: missing row constraints" if line.nil?
+      @row_constraints[i] = line.split.map(&:to_i)
+    end
 
-      # Verify that the first line contains n_rows and n_cols
-      parts = line.split
-      if parts.size != 2 || !parts.all? { |part| part =~ /^\d+$/ }
-        raise "Invalid file format: first line must contain number of rows and columns"
-      end
-
-      # Get the number of rows and columns
-      @n_cols, @n_rows = parts.map(&:to_i)
-      if @n_rows <= 0 || @n_cols <= 0
-        raise ArgumentError, "Invalid number of rows or columns"
-      end
-
-      # Initialize the constraints
-      @row_constraints = Array.new(@n_rows) { [] }
-      @col_constraints = Array.new(@n_cols) { [] }
-
-      # Read the row constraints
-      @n_rows.times do |i|
-        line = file.gets
-        raise "Incomplete file: missing row constraints" if line.nil?
-        @row_constraints[i] = line.split.map(&:to_i)
-      end
-
-      # Read the column constraints
-      @n_cols.times do |j|
-        line = file.gets
-        raise "Incomplete file: missing column constraints" if line.nil?
-        @col_constraints[j] = line.split.map(&:to_i)
-      end
+    # Read the column constraints
+    @n_cols.times do |j|
+      line = file.gets
+      raise "Incomplete file: missing column constraints" if line.nil?
+      @col_constraints[j] = line.split.map(&:to_i)
     end
 
     # To be used for the generation of the CNF file
@@ -58,10 +55,11 @@ class Nonogram
   end
 
   def solve
-    filename = ".tmp_kamotake/#{@name}.cnf"
+    # Writes in /tmp/kamotake from the project root
+    filename = "#{Rails.root}/tmp/kamotake/#{@name}.cnf"
 
     # Create the directory if it doesn't exist
-    FileUtils.mkdir_p(".tmp_kamotake")
+    FileUtils.mkdir_p(File.dirname(filename))
 
     File.open(filename, "w") do |file|
       @row_constraints.each_with_index do |row, i|
@@ -81,63 +79,36 @@ class Nonogram
       end
     end
 
-    header_filename = ".tmp_kamotake/#{@name}_header.cnf"
+    header_filename = "#{Rails.root}/tmp/kamotake/header.cnf"
     File.open(header_filename, "w") do |file|
       file.puts "p cnf #{@n_vars} #{@n_clauses}"
     end
 
-    solution_filename = solve_cnf(header_filename, filename, "glucose")
+    solution_filename = solve_cnf(
+      header_filename,
+      filename,
+      "#{Rails.root}/bin/glucose",
+    )
     @solution = extract_solution(solution_filename)
   end
 
-  # Print the solution to the console
+  # Returns a string representation of the nonogram
   def to_s
     if @solution.nil? || @solution.empty?
-      puts "N = #{@n_rows} x #{@n_cols}"
-      puts "No solution found"
-      return
+      return "N = #{@n_rows} x #{@n_cols}\nNo solution found"
     end
+
+    string = ""
 
     @solution.each do |row|
       row.each do |cell|
-        print cell ? "■ " : ". "
+        string << (cell ? "■ " : ". ")
       end
-      puts
+      string << "\n"
     end
+
+    string
   end
-
-  def to_img
-    if @solution.nil? || @solution.empty?
-      puts "We can't generate an image without a solution 🫙"
-      return
-    end
-
-    # Create a blank image (put in another part but idk where)
-    MiniMagick::Tool::Convert.new do |convert|
-      convert.size "#{@n_cols * 10}x#{@n_rows * 10}"
-      convert.xc "white"
-      convert << "img/#{@name}_solution.png"
-    end
-
-    image = MiniMagick::Image.new("img/#{@name}_solution.png")
-    image.resize "#{@n_cols * 10}x#{@n_rows * 10}"
-    image.format "png"
-
-    @solution.each_with_index do |row, i|
-      row.each_with_index do |cell, j|
-        if cell
-          image.combine_options do |c|
-            c.draw "rectangle #{j * 10},#{i * 10} #{j * 10 + 10},#{i * 10 + 10}"
-          end
-        end
-      end
-    end
-
-    image.write "img/#{@name}_solution.png"
-  end
-
-  # Definir variables privadas para Tseitin y funciones para generar las
-  # cláusulas de cada restricción
 
   private
 
@@ -189,21 +160,26 @@ class Nonogram
     @n_clauses += 1 + n_possibilities * (cells.size + 1)
 
     # At least one possibility must be true
-    file.puts "#{((@ps + 1)..(@ps + n_possibilities)).to_a.join(" ")} 0"
+    for i in @ps + 1..@ps + n_possibilities
+      file.print "#{i} "
+    end
+    file.puts "0"
+
     possibilities.each do |possibility|
       # Generate a Tseitin variable
       @ps += 1
-      aux = [@ps]
+      aux = "#{@ps} "
 
       # Writes the ==> clauses: (-p_i) v (l_1 ^ ... ^ l_n)
       possibility.each_with_index do |value, i|
         l_i = cells[i] * value
         file.puts "#{-@ps} #{l_i} 0"
-        aux << -l_i
+        aux << "#{-l_i} "
       end
+      aux << "0"
 
       # Writes the <== clauses: (p_i v -l_1 v ... v -l_n)
-      file.puts "#{aux.join(" ")} 0"
+      file.puts aux
     end
 
   end

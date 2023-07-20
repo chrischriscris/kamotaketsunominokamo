@@ -1,0 +1,45 @@
+<div class="container">
+    <h1>カモタカツノミノカモ</h1>
+    <h2>Welcome to Kamotake restaurant!</h2>
+
+    <%# Here's your meal! %>
+    <div> Here's your meal! </div>
+
+    <h1><%= @name.upcase %></h1>
+    <div class="solution">
+        <style>
+            table {
+                border-collapse: collapse;
+            }
+
+            td {
+                width: 10px;
+                height: 10px;
+                border: 1px solid black;
+            }
+
+            .black {
+                background-color: black;
+            }
+
+            .white {
+                background-color: white;
+            }
+        </style>
+
+        <%# Draws a grid %>
+        <table>
+            <% @solution.each do |row| %>
+            <tr>
+                <% row.each do |cell| %>
+                <td class="<%= cell ? "black" : "white" %>"></td>
+                <% end %>
+            </tr>
+            <% end %>
+        </table>
+    </div>
+
+    <%# Are you still hungry? (Redirect to /) %>
+    <div> Are you still hungry? </div>
+    <div> <%= link_to "Order again", root_path %> </div>
+</div>
