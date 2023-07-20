@@ -15,7 +15,7 @@ glucose
 
 # kamotake specific
 .tmp_kamotake/
-*.png
+****.png
 
 # Used by dotenv library to load environment variables.
 # .env
