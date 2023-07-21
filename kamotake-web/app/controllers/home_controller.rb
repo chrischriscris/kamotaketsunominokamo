@@ -1,4 +1,4 @@
-require 'kamotake/nonogram'
+require "kamotake/nonogram"
 
 class HomeController < ApplicationController
   @@nonogram = nil

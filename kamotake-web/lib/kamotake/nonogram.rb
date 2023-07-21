@@ -181,7 +181,6 @@ class Nonogram
       # Writes the <== clauses: (p_i v -l_1 v ... v -l_n)
       file.puts aux
     end
-
   end
 
   # Extract solution from a solution file

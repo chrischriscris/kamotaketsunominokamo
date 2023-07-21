@@ -97,9 +97,62 @@ class Nonogram
 
     string = ""
 
+    # Get the maximum number of digits in the row and column constraints
+    mm = @row_constraints.map { |row| row.size }.max
+    nn = @col_constraints.map { |col| col.size }.max
+
+    # p is the padding for the row constraints
+    _p = [
+      @row_constraints.flatten.max.to_s.size,
+      @col_constraints.flatten.max.to_s.size,
+    ].max
+
+    # Create a matrix of nn + n_cols x mm + n_rows
+    matrix = Array.new(nn + @n_rows) { Array.new(mm + @n_cols) { "".rjust(_p) } }
+
+    # Fill the upper left corner with spaces
+    nn.times do |i|
+      mm.times do |j|
+        matrix[i][j] = "#".rjust(_p)
+      end
+    end
+
+    # Fill the matrix with the row constraints
+    @row_constraints.each_with_index do |row, i|
+      off = mm - row.size
+      row.each_with_index { |n, j| matrix[nn + i][j + off] = n.to_s.rjust(_p) }
+    end
+
+    # Fill the matrix with the column constraints
+    @col_constraints.each_with_index do |col, i|
+      off = nn - col.size
+      col.each_with_index { |n, j| matrix[j + off][mm + i] = n.to_s.rjust(_p) }
+    end
+
+    # Fill the matrix with the solution
+    @solution.each_with_index do |row, i|
+      row.each_with_index do |cell, j|
+        matrix[i + nn][j + mm] = cell ? "◼️".rjust(_p+1) : "".rjust(_p)
+      end
+    end
+
+    matrix.each do |row|
+      string << row.join(" ") << "\n"
+    end
+
+    string
+  end
+
+  # Returns a compact string representation of the nonogram
+  def to_s_compact
+    if @solution.nil? || @solution.empty?
+      return "N = #{@n_rows} x #{@n_cols}\nNo solution found"
+    end
+
+    string = ""
     @solution.each do |row|
       row.each do |cell|
-        string << (cell ? "■ " : ". ")
+        string << (cell ? "◼️◼️" : "  ")
       end
       string << "\n"
     end
@@ -211,7 +264,6 @@ class Nonogram
       # Writes the <== clauses: (p_i v -l_1 v ... v -l_n)
       file.puts aux
     end
-
   end
 
   # Extract solution from a solution file

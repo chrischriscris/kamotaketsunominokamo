@@ -9,7 +9,7 @@
         height="auto"
     />
 
-    <%# Here's your meal! %>
+    <% # Here's your meal! %>
     <div> Here's your meal! </div>
     <div class="slider">
         <input
@@ -25,7 +25,7 @@
 
     <div class="solution">
     <h1><%= @name.upcase %></h1>
-        <%# Draws the solution grid %>
+        <% # Draws the solution grid %>
         <table>
             <% @solution.each do |row| %>
             <tr>
@@ -38,7 +38,7 @@
     </div>
 
 
-    <%# Are you still hungry? (Redirect to /) %>
+    <% # Are you still hungry? (Redirect to /) %>
     <div> Are you still hungry? </div>
     <div> <%= link_to "Order again", root_path %> </div>
 </div>

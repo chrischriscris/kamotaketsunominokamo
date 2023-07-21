@@ -39,7 +39,7 @@ def main
   end
 
   nonogram.solve
-  nonogram.to_s
+  puts nonogram.to_s_compact
 
 =begin
 
