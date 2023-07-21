@@ -1,4 +1,4 @@
-<div class="container" style="text-align: center;">
+<div class="container">
   <h1>カモタカツノミノカモ</h1>
   <h2>Welcome to Kamotake restaurant!</h2>
   <div style="display: inline-block; text-align: left;">
@@ -23,7 +23,7 @@
     <h1>MENU</h1>
     <div class="file-upload">
       <label for="file-input">Nonogram (Chef's recommendation)</label>
-      <%= form.file_field :file, accept: "text/plain", id: "file-input" %>
+      <%= form.file_field :file, accept: "text/plain", id: "file-input", required: true %>
     </div>
 
     <label for="file-submit" class="file-submit">

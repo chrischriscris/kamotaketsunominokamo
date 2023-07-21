@@ -48,7 +48,7 @@ Para solicitar una orden (la recomendación del chef), haga click en el botón `
 
 ![Kamotake Web](./img/web2.png)
 
-Luego, suba un ingrediente con el formato de entrada indicada en la sección siguiente, y haga click en el botón `Order!`. El resultado se mostrará en la parte inferior de la página.
+Luego, suba un ingrediente con el formato de entrada indicada en la sección siguiente, y haga click en el botón `Order now!`. El resultado se mostrará en la parte inferior de la página.
 
 ![Kamotake Web](./img/web3.png)
 

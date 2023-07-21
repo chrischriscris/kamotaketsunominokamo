@@ -23,7 +23,7 @@ class HomeController < ApplicationController
 
   def order
     if @@nonogram.nil?
-      redirect_to :root
+      return redirect_to :root
     end
 
     @solution = @@nonogram.solution
