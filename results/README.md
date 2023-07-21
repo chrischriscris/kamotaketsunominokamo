@@ -58,7 +58,7 @@ $(p_1 \lor p_2 \lor p_3) \land (p_1 \leftrightarrow (x_{11} \land x_{12} \land x
 
 Lo cual, luego de desarrollar resulta en 19 cláusulas, a diferencia de las 125 que se generan al distribuir $\land$ sobre $\lor$.
 
-En particular, el número de variables auxiliares que se generan es igual a la suma de la cantidad de posibles combinaciones que satisfacen cada pista para cada fila y columna, el cual, por estar basado en combinaciones, resulta asintóticamente
+En particular, el número de variables auxiliares que se generan es igual a la suma de la cantidad de posibles combinaciones que satisfacen cada pista para cada fila y columna, el cual, por estar basado en combinaciones, resulta crecer asintóticamente de forma factorial.
 
 ### 2.3 Glucose Solver
 
@@ -102,10 +102,9 @@ wget -qO- https://webpbn.com/export.cgi --post-data "id=<problem_id>0&fmt=nin&go
 
 Se puede observar que el número de variables y de cláusulas dependen en gran medida de la instancia en particular, dado que éstas se generan según el número de posibilidades que se tiene de configuraciones válidas para cada pista. Ejemplo de ello, es el test5, que a pesar ser 35x40, no tiene muchas posibles configuraciones válidas dado que tiene numeros casillas ya sombreadas, por lo que el número de variables y cláusulas es bajo. En cambio, el test4, de dimensiones similares, tiene un número de variables y cláusulas mucho mayor, debido a que tiene muchas más posibilidades de configuraciones válidas.
 
-Asimismo, la solución propuesta logra solucionar casos pequeños, medianos y grandes. Sin embargo, para casos muy grandes, como el test1, se tiene que el archivo DIMACS generado es de 10GB, y a su vez, el programa `glucose` no logra resolverlo, ya que se queda sin memoria.
+Asimismo, la solución propuesta logra solucionar casos pequeños, medianos y grandes. Sin embargo, para casos muy grandes, como el test1, se tiene que el archivo DIMACS generado es de 10.7GB, y a su vez, el programa `glucose` no logra resolverlo, ya que se queda sin memoria. Con respecto a los tiempos de ejecución, se tiene que
 
 
 ## 4. Conclusiones
 
-En conclusión, se logró resolver el problema de nonogramas utilizando SAT, traduciendo el problema a una instancia de CNF y resolviéndolo con el programa `glucose`. Sin embargo, se tiene que la solución propuesta no es escalable, ya que para casos muy grandes se tiene que el archivo DIMACS generado es de 10GB, y a su vez, el programa `glucose` no logra resolverlo, ya que se queda sin memoria.
-
+En este proyecto se logró resolver un nonograma utilizando un SAT solver, el cual se tradujo a una instancia de SAT utilizando la transformación de Tseitin. Asimismo, se logró resolver casos pequeños, medianos y grandes, sin embargo, para casos muy grandes, se tiene que el programa `glucose` no logra resolverlo, ya que se queda sin memoria.
