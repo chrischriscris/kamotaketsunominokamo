@@ -1,8 +1,8 @@
 <div class="container">
   <h1>カモタカツノミノカモ</h1>
   <h2>Welcome to Kamotake restaurant!</h2>
-  <div style="display: inline-block; text-align: left;">
-    <p>
+  <div>
+    <p style="text-align: left">
       - I am a god of Shimogamo Shrine. My proper name is
       Kamotaketsunuminokami!<br>
       - K-Kamotake??<br>
@@ -15,23 +15,23 @@
   <img
     src="/assets/kamotake.jpeg"
     alt="Kamotaketsunuminokami"
-    width="800"
+    width="700"
     height="auto"
   />
+  <div style="text-align: center">
+    <%= form_with do |form| %>
+      <h1>MENU</h1>
+      <div class="file-upload">
+        <label for="file-input">Nonogram (Chef's recommendation)</label>
+        <%= form.file_field :file, accept: "text/plain", id: "file-input", required: true %>
+      </div>
 
-  <%= form_with do |form| %>
-    <h1>MENU</h1>
-    <div class="file-upload">
-      <label for="file-input">Nonogram (Chef's recommendation)</label>
-      <%= form.file_field :file, accept: "text/plain", id: "file-input", required: true %>
-    </div>
-
-    <label for="file-submit" class="file-submit">
-      Order now!
-    </label>
-    <%= form.submit id: "file-submit" %>
-  <% end %>
-</div>
+      <label for="file-submit" class="file-submit">
+        Order now!
+      </label>
+      <%= form.submit id: "file-submit" %>
+    <% end %>
+  </div>
 
 <div id="selected-file">
   Ingredients added! <br>
