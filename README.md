@@ -34,7 +34,7 @@ siendo `input_file` el archivo de entrada que describe el problema en el formato
 
 ## Kamotake Web
 
-![Kamotake Web](./img/web.png)
+![Kamotake Web](./img/web1.jpeg)
 
 O para ejecutar la interfaz web, se puede ejecutar:
 
@@ -46,11 +46,11 @@ Luego, se puede acceder a la interfaz web desde el navegador en la dirección `l
 
 Para solicitar una orden (la recomendación del chef), haga click en el botón `Nonogram (Chef's Recommendation)`.
 
-![Kamotake Web](./img/web2.png)
+![Kamotake Web](./img/web2.jpeg)
 
 Luego, suba un ingrediente con el formato de entrada indicada en la sección siguiente, y haga click en el botón `Order now!`. El resultado se mostrará en la parte inferior de la página.
 
-![Kamotake Web](./img/web3.png)
+![Kamotake Web](./img/web3.jpeg)
 
 ## Formato de entrada
 
