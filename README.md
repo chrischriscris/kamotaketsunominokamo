@@ -39,14 +39,14 @@ siendo `input_file` el archivo de entrada que describe el problema en el formato
 O para ejecutar la interfaz web, se puede ejecutar:
 
 ```bash
-    kamotake-web
+kamotake-web
 ```
 
 Luego, se puede acceder a la interfaz web desde el navegador en la dirección `localhost:3000`.
 
 Para solicitar una orden (la recomendación del chef), haga click en el botón `Nonogram (Chef's Recommendation)`.
 
-![Kamotake Web](./img/web2.jpeg)
+![Kamotake Web](./img/web2.png)
 
 Luego, suba un ingrediente con el formato de entrada indicada en la sección siguiente, y haga click en el botón `Order now!`. El resultado se mostrará en la parte inferior de la página.
 
