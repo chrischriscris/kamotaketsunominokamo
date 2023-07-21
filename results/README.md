@@ -10,6 +10,8 @@ Por <a href='https://www.github.com/chrischriscris'>Chus</a> | <a href='https://
 
 ## 1. Introducción
 
+Un nonograma, también llamado como Hanjie, Picross o Griddlers, es un rompecabezas lógico con reglas simples y soluciones desafiantes. Las reglas son simples: tienes una cuadrícula de cuadrados, que deben ser rellenados en negro o marcados con una X.
+
 
 
 ## 2. Detalles de implementación
