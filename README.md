@@ -46,7 +46,7 @@ O para ejecutar la interfaz web, se debe ejecutar desde la carpeta raíz del rep
 ./run-kamotake-server.sh
 ```
 
-Luego, se puede acceder a la interfaz web desde el navegador en la dirección `localhost:3000`.
+Luego, se puede acceder a la interfaz web desde el navegador en la dirección `localhost:12345`.
 
 Para solicitar una orden (la recomendación del chef), haga click en el botón `Nonogram (Chef's Recommendation)`.
 
