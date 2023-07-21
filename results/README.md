@@ -58,12 +58,11 @@ $(p_1 \lor p_2 \lor p_3) \land (p_1 \leftrightarrow (x_{11} \land x_{12} \land x
 
 Lo cual, luego de desarrollar resulta en 19 cláusulas, a diferencia de las 125 que se generan al distribuir $\land$ sobre $\lor$.
 
-En particular, el número de variables auxiliares que se generan es igual a la suma de la cantidad de posibles combinaciones que satisfacen cada pista para cada fila y columna, lo cual es polinomial en el tamaño de la entrada.
+En particular, el número de variables auxiliares que se generan es igual a la suma de la cantidad de posibles combinaciones que satisfacen cada pista para cada fila y columna, el cual, por estar basado en combinaciones, resulta asintóticamente
 
 ### 2.3 Glucose Solver
 
 Tras la traducción del problema en un caso de SAT, se procedió a ejecutar el programa `glucose`, en su versión 4.2.1, para resolver el problema.
-
 
 ### 2.3 Otras consideraciones
 
@@ -108,5 +107,5 @@ Asimismo, la solución propuesta logra solucionar casos pequeños, medianos y gr
 
 ## 4. Conclusiones
 
-
+En conclusión, se logró resolver el problema de nonogramas utilizando SAT, traduciendo el problema a una instancia de CNF y resolviéndolo con el programa `glucose`. Sin embargo, se tiene que la solución propuesta no es escalable, ya que para casos muy grandes se tiene que el archivo DIMACS generado es de 10GB, y a su vez, el programa `glucose` no logra resolverlo, ya que se queda sin memoria.
 
