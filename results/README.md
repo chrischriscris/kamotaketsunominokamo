@@ -60,11 +60,65 @@ Lo cual, luego de desarrollar resulta en 19 cláusulas, a diferencia de las 125 
 
 En particular, el número de variables auxiliares que se generan es igual a la suma de la cantidad de posibles combinaciones que satisfacen cada pista para cada fila y columna, el cual, por estar basado en combinaciones, resulta crecer asintóticamente de forma factorial.
 
+Veamos pues que el número de combinaciones posibles se reduce a un problema de escoger $l$ bloques de un conjunto de $k$, donde $l$ es el número de elementos de la pista (la lista de números que aparece a la izquierda de una fila o encima de una columna), y $k$ es el número total de lugares donde se pueden colocar los bloques, que es igual al número de celdas de la fila o columna, menos la suma de los elementos de la pista más uno (esto último es para dejar un espacio entre cada bloque).
+
+Para el ejemplo anterior, la primera fila tiene longitud 5 y la pista es `[3]`, por lo que $l = 1$ y $k = 5 - 3 + 1 = 3$. Así, el número de combinaciones posibles es igual a $\binom{3}{1} = 3$.
+
+De esta forma, se tiene que una expresión general para calcular el número de posibilidades para la fila $i$ es, sea $PF_i$ la lista pista de la fila $i$ y $PC_j$ la lista pista de la columna $j$:
+
+$$n\_pos\_fila_i = \binom{m + 1 - \sum_{j=1}^{PF_i.size} P_i[j]}{PF_i.size}$$
+
+Y para la columna $j$:
+
+$$n\_pos\_col_j = \binom{n + 1 - \sum_{i=1}^{PC_j.size} P_j[i]}{PC_j.size}$$
+
+Así, el número total de variables auxiliares que se generan es:
+
+$$n\_vars = \sum_{i=1}^{n} n\_pos\_col_i + \sum_{j=1}^{m} n\_pos\_fila_j$$
+
+Por lo que el número total de variables resulta ser $n \times m + n\_vars$.
+
+<!--
+(p1 v p2 v ... v pn_pos_fila_i) ^ + 1
+
+Posibilidad 1:
+(-p1 v (l1 ^ l2 ^ ... ^ lk)) ^ + ncol
+(p1 v -l1 v -l2 v ... v  -lk)) ^ + 1
+.
+.
+.
+Posibilidad n:
+(-pn_pos_fila_i v (l1 ^ l2 ^ ... ^ lk)) ^ + ncol
+(pn_pos_fila_i v -l1 v -l2 v ... v  -lk)) ^ + 1
+-->
+
+Finalmente, las expresiones para el número de cláusulas a generar para la fila $i$ tras la transformación de Tseitin es:
+
+$$n\_claus\_fila_i = 1 + n\_pos\_fila_i * (m + 1)$$
+
+Y para la columna $j$:
+
+$$n\_claus\_col_i = 1 + n\_pos\_col_i * (n + 1)$$
+
+Por lo que el número total de cláusulas resulta ser:
+
+$$n\_claus = \sum_{i=1}^{n} n\_claus\_fila_i + \sum_{j=1}^{m} n\_claus\_col_j$$
+
 ### 2.3 Glucose Solver
 
 Tras la traducción del problema en un caso de SAT, se procedió a ejecutar el programa `glucose`, en su versión 4.2.1, para resolver el problema.
 
 ### 2.3 Otras consideraciones
+
+Gracias a que en el proyecto anterior se obtuvo el resultado de que un gran cuello de botella era guardar la CNF en memoria antes de escribirla, se decidió en este proyecto escribir la CNF directamente a un archivo, sin embargo, la entrada en formato DIMACS para `glucose` requiere que se indique el número de variables y cláusulas generado al comienzo, lo cual era un cálculo muy complicado de hacer antes de generar las cláusulas y de forma razonablemente eficiente.
+
+A pesar de que la solución inmediata a este problema era generar la CNF en memoria, se decidió utilizar un enfoque diferente, el cual consiste en contar las variables y cláusulas que se van generando a medida que se escribe la CNF al archivo, y luego, al final, escribir en otro archivo solamente la cabecera del formato DIMACS con el número de variables y cláusulas contados.
+
+Esto no genera un gran impacto en los tiempos de ejecución, ya que el archivo no se escribe dos veces (es decir, no se vuelven a escribir todas las cláusulas para hacer _prepend_ de la cabecera), sino que al pasar el archivo a `glucose` se concatenan los dos archivos in-place con el comando `cat` y mediante una pipe se hace que `glucose` lea de la entrada estándar, que empieza a leer del segundo archivo al terminar el primero:
+
+```bash
+cat <header_file> <cnf_file> | glucose /dev/stdin
+```
 
 ## 3. Resultados experimentales
 
@@ -108,3 +162,6 @@ Asimismo, la solución propuesta logra solucionar casos pequeños, medianos y gr
 ## 4. Conclusiones y recomendaciones
 
 - En este proyecto se logró resolver un nonograma utilizando un SAT solver, el cual se tradujo a una instancia de SAT utilizando la transformación de Tseitin. Asimismo, se logró resolver casos pequeños, medianos y grandes, sin embargo, para casos muy grandes, se tiene que el programa `glucose` no logra resolverlo, ya que se queda sin memoria.
+
+- Para futuros proyectos, se puede realizar por encima del computo de casos posibles, el empleo de alguna heurística que permita reducir el número de combinaciones posibles, y así, reducir el número de variables y cláusulas generadas. Esto permitiría resolver casos muchos más grandes, y a su vez, reducir el tiempo de ejecución.
+
