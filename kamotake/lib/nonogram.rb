@@ -105,7 +105,7 @@ class Nonogram
     _p = [
       @row_constraints.flatten.max.to_s.size,
       @col_constraints.flatten.max.to_s.size,
-    ].max
+    ].max + 1
 
     # Create a matrix of nn + n_cols x mm + n_rows
     matrix = Array.new(nn + @n_rows) { Array.new(mm + @n_cols) { "".rjust(_p) } }
@@ -113,7 +113,7 @@ class Nonogram
     # Fill the upper left corner with spaces
     nn.times do |i|
       mm.times do |j|
-        matrix[i][j] = "#".rjust(_p)
+        matrix[i][j] = "#".rjust(_p, "#")
       end
     end
 
@@ -132,12 +132,12 @@ class Nonogram
     # Fill the matrix with the solution
     @solution.each_with_index do |row, i|
       row.each_with_index do |cell, j|
-        matrix[i + nn][j + mm] = cell ? "◼️".rjust(_p+1) : "".rjust(_p)
+        matrix[i + nn][j + mm] = cell ? "◼️".rjust(_p+1) : ".".rjust(_p)
       end
     end
 
     matrix.each do |row|
-      string << row.join(" ") << "\n"
+      string << row.join("") << "\n"
     end
 
     string
