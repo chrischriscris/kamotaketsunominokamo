@@ -22,7 +22,7 @@ Si hay algún problema con la instalación, pruebe a clonar nuevamente el reposi
 
 Otro error que puede suceder durante la instalación, es la falta de permisos para instalar las dependencias de `ruby` en la raíz del sistema. Para evitar esto, se recomienda usar un manejador de versiones como `RVM` o `rbenv`, para instalar `ruby` en un directorio local.
 
-## Uso
+## CLI Uso
 
 Una vez instalado el programa, se puede ejecutar desde cualquier directorio mientras se esté en la misma sesión de terminal:
 
@@ -31,6 +31,26 @@ kamotake <input_file> -d -c
 ```
 
 siendo `input_file` el archivo de entrada que describe el problema en el formato especificado más abajo, y los flags opcionales `-d` para mantener los archivos DIMACS y CNF generados, y `-c` para mostrar el resultado compacto.
+
+## Kamotake Web
+
+![Kamotake Web](./img/web.png)
+
+O para ejecutar la interfaz web, se puede ejecutar:
+
+```bash
+    kamotake-web
+```
+
+Luego, se puede acceder a la interfaz web desde el navegador en la dirección `localhost:3000`.
+
+Para solicitar una orden (la recomendación del chef), haga click en el botón `Nonogram (Chef's Recommendation)`.
+
+![Kamotake Web](./img/web2.png)
+
+Luego, suba un ingrediente con el formato de entrada indicada en la sección siguiente, y haga click en el botón `Order!`. El resultado se mostrará en la parte inferior de la página.
+
+![Kamotake Web](./img/web3.png)
 
 ## Formato de entrada
 

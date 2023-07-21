@@ -92,24 +92,6 @@ class Nonogram
     @solution = extract_solution(solution_filename)
   end
 
-  # Returns a string representation of the nonogram
-  def to_s
-    if @solution.nil? || @solution.empty?
-      return "N = #{@n_rows} x #{@n_cols}\nNo solution found"
-    end
-
-    string = ""
-
-    @solution.each do |row|
-      row.each do |cell|
-        string << (cell ? "■ " : ". ")
-      end
-      string << "\n"
-    end
-
-    string
-  end
-
   private
 
   # Generate all possible combinations of groups and empty spaces for a row or

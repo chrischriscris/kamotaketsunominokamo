@@ -32,4 +32,11 @@ else
     export PATH=$PWD/kamotake/bin:$PATH
 fi
 
+echo "  Adding kamotake-web executables to PATH in this session"
+if [[ ":$PATH:" == *":$PWD/kamotake-web/bin:"* ]]; then
+    echo "    They're already there"
+else
+    export PATH=$PWD/kamotake-web/bin:$PATH
+fi
+
 echo "Done, you're good to go!"
