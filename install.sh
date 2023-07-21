@@ -17,6 +17,16 @@ if [ $? -eq 0 ]; then
     fi
 
     cd ..
+    cd kamotake-web && bundle install >> /dev/null
+
+    # Verifies if the bundle install command wasn't successful
+    if [ $? -ne 0 ]; then
+        echo "  Error installing dependencies"
+        cd ..
+        return 1
+    fi
+
+    cd ..
     echo "  Dependencies installed"
 else
     echo "  Error installing dependencies"

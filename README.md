@@ -40,10 +40,10 @@ siendo `input_file` el archivo de entrada que describe el problema en el formato
 
 ![Kamotake Web](./img/web1.jpeg)
 
-O para ejecutar la interfaz web, se puede ejecutar:
+O para ejecutar la interfaz web, se debe ejecutar desde la carpeta raíz del repositorio:
 
 ```bash
-kamotake-web
+./run-kamotake-server.sh
 ```
 
 Luego, se puede acceder a la interfaz web desde el navegador en la dirección `localhost:3000`.
