@@ -32,6 +32,10 @@ kamotake <input_file> -d -c
 
 siendo `input_file` el archivo de entrada que describe el problema en el formato especificado más abajo, y los flags opcionales `-d` para mantener los archivos DIMACS y CNF generados, y `-c` para mostrar el resultado compacto.
 
+| ![CLI](./img/cli1.png) | ![CLI](./img/cli2.png) |
+| ---------------------- | ---------------------- |
+| Sin compactar          | Compactado             |
+
 ## Kamotake Web
 
 ![Kamotake Web](./img/web1.jpeg)
