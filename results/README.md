@@ -22,7 +22,7 @@ En el siguiente proyecto se busca resolver un nonograma en su variación monocro
 
 Para representar el problema, se comenzó generando una variable por cada celda de la cuadrícula, con el siguiente formato:
 
-$x_{ij}$: Variable que representa si la celda en la fila $i$ y columna $j$ está sombreada, donde $ 1 \leq i \leq n $ y $ 1 \leq j \leq m $
+$x_{ij}$: Variable que representa si la celda en la fila $i$ y columna $j$ está sombreada, donde $1 \leq i \leq n$ y $1 \leq j \leq m$
 
 ### 2.2 Traducción del problema
 
