@@ -1,5 +1,4 @@
 require "fileutils"
-require "mini_magick"
 
 require_relative "../lib/utils"
 
@@ -62,23 +61,42 @@ class Nonogram
     # Create the directory if it doesn't exist
     FileUtils.mkdir_p(".tmp_kamotake")
 
-    File.open(filename, "w") do |file|
-      @row_constraints.each_with_index do |row, i|
-        start = i * @n_cols + 1
-        _end = start + @n_cols
-        cells = (start..._end).to_a
+    t_translation = 0
+    thr = Thread.new do
+      t_translation = measure_time do
+        File.open(filename, "w") do |file|
+          @row_constraints.each_with_index do |row, i|
+            start = i * @n_cols + 1
+            _end = start + @n_cols
+            cells = (start..._end).to_a
 
-        write_clauses!(file, cells, row, true)
+            write_clauses!(file, cells, row, true)
+          end# do |row, i|
+
+          @col_constraints.each_with_index do |col, i|
+            start = i + 1
+            _end = start + @n_cols * @n_rows
+            cells = (start..._end).step(@n_cols).to_a
+
+            write_clauses!(file, cells, col, false)
+          end# do |col, i|
+        end# do |file|
+      end# do |t_translation|
+    end# do |thr|
+
+    begin
+      while thr.alive?
+        for i in 0..3
+          print "\rWait while we're painting your nonogram in CNF 👘#{"." * i}#{" " * (3 - i)}"
+          sleep 0.3
+        end
       end
-
-      @col_constraints.each_with_index do |col, i|
-        start = i + 1
-        _end = start + @n_cols * @n_rows
-        cells = (start..._end).step(@n_cols).to_a
-
-        write_clauses!(file, cells, col, false)
-      end
+    rescue Interrupt
+      puts "\rInterrupted! 🔇#{" " * 112}"
+      FileUtils.rm_rf(".tmp_kamotake")
+      exit 1
     end
+    puts "\rPicture completed in #{t_translation} seconds! 🎴 (DIMACS translation generated in #{filename})"
 
     header_filename = ".tmp_kamotake/#{@name}_header.cnf"
     File.open(header_filename, "w") do |file|
@@ -92,7 +110,7 @@ class Nonogram
   # Returns a string representation of the nonogram
   def to_s
     if @solution.nil? || @solution.empty?
-      return "N = #{@n_rows} x #{@n_cols}\nNo solution found"
+      return "N = #{@n_rows} x #{@n_cols}\nNo solution found 🦐"
     end
 
     string = ""
@@ -159,39 +177,6 @@ class Nonogram
 
     string
   end
-
-  def to_img
-    if @solution.nil? || @solution.empty?
-      puts "We can't generate an image without a solution 🫙"
-      return
-    end
-
-    # Create a blank image (put in another part but idk where)
-    MiniMagick::Tool::Convert.new do |convert|
-      convert.size "#{@n_cols * 10}x#{@n_rows * 10}"
-      convert.xc "white"
-      convert << "img/#{@name}_solution.png"
-    end
-
-    image = MiniMagick::Image.new("img/#{@name}_solution.png")
-    image.resize "#{@n_cols * 10}x#{@n_rows * 10}"
-    image.format "png"
-
-    @solution.each_with_index do |row, i|
-      row.each_with_index do |cell, j|
-        if cell
-          image.combine_options do |c|
-            c.draw "rectangle #{j * 10},#{i * 10} #{j * 10 + 10},#{i * 10 + 10}"
-          end
-        end
-      end
-    end
-
-    image.write "img/#{@name}_solution.png"
-  end
-
-  # Definir variables privadas para Tseitin y funciones para generar las
-  # cláusulas de cada restricción
 
   private
 

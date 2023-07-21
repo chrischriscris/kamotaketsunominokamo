@@ -27,10 +27,10 @@ Otro error que puede suceder durante la instalación, es la falta de permisos pa
 Una vez instalado el programa, se puede ejecutar desde cualquier directorio mientras se esté en la misma sesión de terminal:
 
 ```bash
-kamotake <input_file>
+kamotake <input_file> -d -c
 ```
 
-siendo `input_file` el archivo de entrada que describe el problema en el formato especificado más abajo.
+siendo `input_file` el archivo de entrada que describe el problema en el formato especificado más abajo, y los flags opcionales `-d` para mantener los archivos DIMACS y CNF generados, y `-c` para mostrar el resultado compacto.
 
 ## Formato de entrada
 

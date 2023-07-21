@@ -35,13 +35,13 @@ def solve_cnf(header_filename, cnf_filename, bin_path)
         status = Process.waitpid2(pid, Process::WNOHANG)
       rescue Errno::ECHILD
         # Child process has exited, do something
-        puts "\rWe're finished in #{Time.now - t_start} seconds! 🦛 (Solution found in #{solution_filename})\n\n"
+        puts "\rWe're finished in #{Time.now - t_start} seconds! 🦛 (Solution found in #{solution_filename})"
         break
       end
 
       # Child process is still running
       for char in ["—", "\\", "|", "/"]
-        print "\rPlease wait we're attempting to schedule 🍳... #{char}"
+        print "\rPlease wait we're computing posssibilities 🧠... #{char}"
         sleep 0.1
       end
     end
